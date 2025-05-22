@@ -1,5 +1,4 @@
 import tkinter as tk
-import threading
 
 class OverlayGuide:
     def __init__(self, steps):
@@ -15,12 +14,23 @@ class OverlayGuide:
         self.step = 0
         self.draw_step()
         self.root.bind("<Return>", self.next_step)
-        threading.Thread(target=self.root.mainloop, daemon=True).start()
+        # NO threading here! Tkinter must run in the main thread.
+        self.root.mainloop()
 
     def draw_arrow(self, x, y, text):
         self.canvas.delete("all")
         self.canvas.create_line(x, y, x+100, y-100, arrow=tk.LAST, width=8, fill='yellow')
-        self.canvas.create_text(x+120, y-120, text=text, fill='white', font=('Arial', 24, 'bold'), anchor='nw')
+
+        # Place text according to step
+        if self.step == 0:
+            # First arrow: text left of arrow
+            self.canvas.create_text(x-30, y-30, text=text, fill='white', font=('Arial', 24, 'bold'), anchor='ne')
+        elif self.step == 1:
+            # Second arrow: text right of arrow
+            self.canvas.create_text(x+130, y-30, text=text, fill='white', font=('Arial', 24, 'bold'), anchor='nw')
+        elif self.step == 2:
+            # Third arrow: text below arrow
+            self.canvas.create_text(x+50, y+40, text=text, fill='white', font=('Arial', 24, 'bold'), anchor='n')
 
     def draw_step(self):
         if self.step < len(self.steps):

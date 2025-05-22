@@ -39,15 +39,7 @@ def find_browser():
 
 def launch_browser(chrome_path, extensions_url):
     try:
-        subprocess.Popen([chrome_path, extensions_url])
+        # Try to open a new tab in an existing Chrome session
+        subprocess.Popen([chrome_path, "--new-tab", extensions_url])
     except Exception as e:
         print(f"Failed to launch Chrome: {e}")
-
-# Example usage:
-if __name__ == "__main__":
-    try:
-        chrome_path = find_browser()
-        print(f"Found Chrome at: {chrome_path}")
-        launch_browser(chrome_path, "chrome://extensions/")
-    except RuntimeError as e:
-        print(e)

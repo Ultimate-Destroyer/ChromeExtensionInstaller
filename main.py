@@ -3,6 +3,7 @@ import time
 from downloader import download_and_extract
 from browser_launcher import find_browser, launch_browser
 from overlay import OverlayGuide
+from utils import open_extensions_page_with_pyautogui
 
 REPO = "vedantchalke36/pcm-scoremate"
 
@@ -23,20 +24,23 @@ def main():
         sys.exit(1)
 
     print(f"Found Chrome at: {chrome_path}")
-    print("Launching Chrome extensions page...")
-    extensions_url = "chrome://extensions/"
-    launch_browser(chrome_path, extensions_url)
-    time.sleep(2)
+    print("Opening Chrome (new window)...")
+    launch_browser(chrome_path, "")  # Open Chrome with no URL
+
+    # Automatically detect Chrome window and dial chrome://extensions
+    open_extensions_page_with_pyautogui()
+    time.sleep(2)  # Wait for the page to load
+
+    print("Follow the on-screen arrows and instructions.")
 
     # Guide steps: (x, y, text)
-    # You may need to adjust these coordinates for your display/browser!
     steps = [
-        (300, 100, "1. Enable 'Developer mode' (top right)\nPress Enter here after you do it"),
-        (160, 160, "2. Click 'Load unpacked'\nPress Enter here after you do it"),
-        (600, 400, f"3. In the dialog, select:\n{extension_folder}\nPress Enter here after installing"),
+        (1650, 250, "1. Enable 'Developer mode' (top right)\nPress Enter here after you do it"),  # text left
+        (180, 305, "2. Click 'Load unpacked'\nPress Enter here after you do it"),                 # text right
+        (600, 600, f"3. In the dialog, select:\n{extension_folder}\nPress Enter here after installing"),  # text below
     ]
+
     OverlayGuide(steps)
-    input("Follow the on-screen arrows and instructions. Press Enter here when done.")
     print("Done! The extension should now be installed.")
 
 if __name__ == "__main__":
