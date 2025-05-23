@@ -37,4 +37,4 @@ jobs:
         with:
           files: dist_upload/ChromeExtensionInstaller.exe
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.RELEASER_TOKEN }}
