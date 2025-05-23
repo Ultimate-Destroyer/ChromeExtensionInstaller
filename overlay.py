@@ -1,48 +1,48 @@
 import tkinter as tk
 
-class OverlayGuide:
-    def __init__(self, steps):
+class OverlayMessage:
+    def __init__(self, messages):
         self.root = tk.Tk()
         self.root.attributes('-topmost', True)
-        self.root.attributes('-alpha', 0.7)
+        self.root.attributes('-alpha', 0.85)
         self.root.overrideredirect(True)
-        self.root.geometry(f"{self.root.winfo_screenwidth()}x{self.root.winfo_screenheight()}+0+0")
-        self.canvas = tk.Canvas(self.root, width=self.root.winfo_screenwidth(),
-                                height=self.root.winfo_screenheight(), bg='black')
+        self.root.configure(bg='black')
+        screen_width = self.root.winfo_screenwidth()
+        screen_height = self.root.winfo_screenheight()
+        self.root.geometry(f"{screen_width}x{screen_height}+0+0")
+        self.canvas = tk.Canvas(self.root, width=screen_width, height=screen_height, bg='black', highlightthickness=0)
         self.canvas.pack()
-        self.steps = steps
+        self.messages = messages
         self.step = 0
-        self.draw_step()
-        self.root.bind("<Return>", self.next_step)
-        # NO threading here! Tkinter must run in the main thread.
+        self.show_message()
+        self.root.bind("<Return>", self.next_message)
+        self.root.bind("<Button-1>", self.next_message)  # Also allow mouse click
         self.root.mainloop()
 
-    def draw_arrow(self, x, y, text):
+    def show_message(self):
         self.canvas.delete("all")
-        self.canvas.create_line(x, y, x+100, y-100, arrow=tk.LAST, width=8, fill='yellow')
+        screen_width = self.root.winfo_screenwidth()
+        screen_height = self.root.winfo_screenheight()
+        text = self.messages[self.step]
+        self.canvas.create_text(
+            screen_width // 2, screen_height // 2,
+            text=text,
+            fill='white',
+            font=('Arial', 32, 'bold'),
+            anchor='center',
+            justify='center'
+        )
+        self.canvas.create_text(
+            screen_width // 2, screen_height // 2 + 120,
+            text="Press Enter or click to continue...",
+            fill='yellow',
+            font=('Arial', 20, 'italic'),
+            anchor='center'
+        )
 
-        # Place text according to step
-        if self.step == 0:
-            # First arrow: text left of arrow
-            self.canvas.create_text(x-30, y-30, text=text, fill='white', font=('Arial', 24, 'bold'), anchor='ne')
-        elif self.step == 1:
-            # Second arrow: text right of arrow
-            self.canvas.create_text(x+130, y-30, text=text, fill='white', font=('Arial', 24, 'bold'), anchor='nw')
-        elif self.step == 2:
-            # Third arrow: text below arrow
-            self.canvas.create_text(x+50, y+40, text=text, fill='white', font=('Arial', 24, 'bold'), anchor='n')
-
-    def draw_step(self):
-        if self.step < len(self.steps):
-            x, y, text = self.steps[self.step]
-            self.draw_arrow(x, y, text)
-        else:
-            self.canvas.delete("all")
-            self.canvas.create_text(self.root.winfo_screenwidth()//2,
-                                   self.root.winfo_screenheight()//2,
-                                   text="Done!", fill='lime', font=('Arial', 48, 'bold'), anchor='center')
-            self.root.after(2000, self.root.destroy)
-
-    def next_step(self, event=None):
+    def next_message(self, event=None):
         self.step += 1
-        self.draw_step()
+        if self.step < len(self.messages):
+            self.show_message()
+        else:
+            self.root.destroy()
