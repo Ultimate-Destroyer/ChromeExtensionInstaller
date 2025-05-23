@@ -50,7 +50,7 @@ This project provides a fully automated, user-friendly tool for installing any u
 
 ## Usage
 
-A pre-built binary is available in the [Releases]([../../releases](https://github.com/Ultimate-Destroyer/ChromeExtensionInstaller/releases/)) section for easy use.  
+A pre-built binary is available in the [Releases](https://github.com/Ultimate-Destroyer/ChromeExtensionInstaller/releases/) section for easy use.  
 **No Python installation or setup is required for end-users.**
 
 ---
